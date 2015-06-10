@@ -3,9 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/GoogleCloudPlatform/kubernetes/pkg/client"
-	"github.com/GoogleCloudPlatform/kubernetes/pkg/fields"
-	"github.com/GoogleCloudPlatform/kubernetes/pkg/labels"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -60,27 +57,6 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func testHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "herd test,"+r.Host+","+strconv.FormatInt(time.Now().UnixNano(), 10)+"\n")
 
-	api, _ := getApi()
-	fmt.Fprint(w, "api:\n"+api+"\n")
-
-	ver, _ := getVersion()
-	fmt.Fprint(w, "version:\n"+ver+"\n")
-
-	// k8s client package
-	config := &client.Config{
-		Host:    "http://192.168.4.54:8080",
-		Version: "v1beta3",
-	}
-	client, err := client.New(config)
-	if err != nil {
-		// handle error
-	}
-
-	selector := labels.Set{"name": "redis-master"}.AsSelector()
-	receivedPodList, err := client.Pods("default").List(selector, fields.Everything())
-
-	fmt.Fprintf(w, "PodList:\n%v\n", receivedPodList)
-	fmt.Printf("PodList:\n%v\n", receivedPodList)
+	test_3_Handler(w, r)
 }
