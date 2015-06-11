@@ -1,13 +1,44 @@
-package main
+package etcd
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/coreos/go-etcd/etcd"
+	"github.com/gosharplite/herd/log"
 	"net/http"
 	"strconv"
 	"time"
 )
+
+var (
+	ETCD_PREFIX = "/gigacloud.com/autoscale/"
+	c           *etcd.Client
+)
+
+func init() {
+	machines := []string{"http://192.168.3.36:2379", "http://192.168.3.37:2379", "http://192.168.3.38:2379"}
+	c = etcd.NewClient(machines)
+	if c == nil {
+		log.Err("etcd.NewClient(machines)")
+	}
+}
+
+func Set(key, value string) error {
+
+	if key == "" {
+		log.Err("key is empty")
+		return errors.New("key is empty")
+	}
+
+	_, err := c.Set(ETCD_PREFIX+key, value, 0)
+	if err != nil {
+		log.Err("c.Set(key, value, 0): %v", err)
+		return err
+	}
+
+	return nil
+}
 
 func test_3_Handler(w http.ResponseWriter, r *http.Request) {
 
