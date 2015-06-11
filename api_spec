@@ -1,7 +1,7 @@
 /setscale
 ==POST==
 {
-	    "cluster_id" : (string),										# rc name
+	    "cluster_id" : (string),												# rc name
 		"enable_auto_scale": (int) 0 = off; 1 = on,
 		"cpu_min": (int),
 		"cpu_max": (int),
@@ -13,7 +13,7 @@
 ==POST==
 {
 	"clusters":
-		["id1","id2","id3"]									# rc name
+		["id1","id2","id3"]													# rc name
 }
 
 ==RESPONSE==
@@ -21,7 +21,7 @@
 	"clusters" :
 		[
 			{
-				"cluster_id" : (string),								# rc name
+				"cluster_id" : (string),										# rc name
 				"enable_auto_scale": (int) 0 = off; 1 = on,
 				"cpu_min": (int),
 				"cpu_max": (int),
@@ -34,49 +34,48 @@
 /get
 ==POST==
 {
-	"service" :
-		[
-			{
-				"service_name" : (string)								# service name
-			}
-		]
-
-	"type" : (int), 0 = all container cpu avg. + mem total
-					1 = container only cpu + mem
+	"services" :																# service name
+		["id1","id2","id3"]
+																			
+	"clusters" :
+		["id1","id2","id3"]													# rc name
 }
 
-==RESPONSE 0==
+==RESPONSE==
 {
-	"service":
+	"services":
 		[
 			{
-				"service_name": (string),								# service name
-				"cpu" : (int),
-				"mem" : (int)
+				"service_name": (string),									# service name
+				"clusters":
+					[
+						{
+							"cluster_name":(string),							# rc name
+							"containers":										
+								[
+									{
+										"container_name": (string),			# pod name
+										"cpu": (int),
+										"mem": (int)
+									}
+								]
+						}
+					]
 			}
 		]
-	"type": (int), 0 = all container cpu avg. + mem total
-}
-
-==RESPONSE 1==
-{
+		
 	"clusters":
 		[
 			{
-				"cluster_name":(string),								# rc name
-				"cpu": (int),											# all container cpu avg. + mem total
-				"mem": (int),
-				"container_info":										
+				"cluster_name":(string),										# rc name
+				"containers":										
 					[
 						{
-							"container_name": (string),					# pod name
+							"container_name": (string),						# pod name
 							"cpu": (int),
 							"mem": (int)
 						}
 					]
 			}
 		]
-	"type" : (int), 1 = cluster and container only cpu + mem			# rc and pod names
 }
-
-
