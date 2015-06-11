@@ -33,11 +33,27 @@ func Set(key, value string) error {
 
 	_, err := c.Set(ETCD_PREFIX+key, value, 0)
 	if err != nil {
-		log.Err("c.Set(key, value, 0): %v", err)
+		log.Err("c.Set(): %v", err)
 		return err
 	}
 
 	return nil
+}
+
+func Get(key string) (string, error) {
+
+	if key == "" {
+		log.Err("key is empty")
+		return "", errors.New("key is empty")
+	}
+
+	r, err := c.Get(ETCD_PREFIX+key, false, false)
+	if err != nil {
+		log.Err("c.Get(): %v", err)
+		return "", err
+	}
+
+	return r.Node.Value, nil
 }
 
 func test_3_Handler(w http.ResponseWriter, r *http.Request) {

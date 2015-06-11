@@ -12,12 +12,8 @@
 /getscale
 ==POST==
 {
-	"clusters" :
-		[
-			{
-	    		"cluster_id" : (string)									# rc name
-			}
-	    ]
+	"clusters":
+		["id1","id2","id3"]									# rc name
 }
 
 ==RESPONSE==
