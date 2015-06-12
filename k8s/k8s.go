@@ -8,6 +8,8 @@ import (
 	"github.com/gosharplite/herd/log"
 )
 
+// TODO Make it better.
+
 var (
 	K8S_HOST      = "http://192.168.4.54:8080"
 	K8S_VERSION   = "v1beta3"
@@ -29,8 +31,22 @@ func init() {
 	}
 }
 
-func GetRC(name string) (*api.ReplicationController, error) {
+func GetService(name string) (*api.Service, error) {
+	return c.Services(K8S_NAMESPACE).Get(name)
+}
 
+func GetRCList(lbs map[string]string) (*api.ReplicationControllerList, error) {
+	selector := labels.Set(lbs).AsSelector()
+	log.Info("selector: %v", selector)
+
+	r, e := c.ReplicationControllers(K8S_NAMESPACE).List(selector)
+
+	log.Info("ReplicationControllerList: %v", r)
+
+	return r, e
+}
+
+func GetRC(name string) (*api.ReplicationController, error) {
 	return c.ReplicationControllers(K8S_NAMESPACE).Get(name)
 }
 
