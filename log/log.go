@@ -6,6 +6,8 @@ import (
 	"log/syslog"
 )
 
+// TODO Get rid of syslog.
+
 var slog *syslog.Writer
 
 func init() {

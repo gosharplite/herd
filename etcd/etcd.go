@@ -1,26 +1,28 @@
 package etcd
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/coreos/go-etcd/etcd"
 	"github.com/gosharplite/herd/log"
-	"net/http"
-	"strconv"
-	"time"
 )
 
+// TODO Make it better.
+
 var (
+	ETCD_MACHINES = []string{
+		"http://192.168.3.36:2379",
+		"http://192.168.3.37:2379",
+		"http://192.168.3.38:2379"}
+
 	ETCD_PREFIX = "/gigacloud.com/autoscale/"
-	c           *etcd.Client
+
+	c *etcd.Client
 )
 
 func init() {
-	machines := []string{"http://192.168.3.36:2379", "http://192.168.3.37:2379", "http://192.168.3.38:2379"}
-	c = etcd.NewClient(machines)
+	c = etcd.NewClient(ETCD_MACHINES)
 	if c == nil {
-		log.Err("etcd.NewClient(machines)")
+		log.Err("etcd.NewClient()")
 	}
 }
 
@@ -54,30 +56,4 @@ func Get(key string) (string, error) {
 	}
 
 	return r.Node.Value, nil
-}
-
-func test_3_Handler(w http.ResponseWriter, r *http.Request) {
-
-	fmt.Fprint(w, "herd test,"+r.Host+","+strconv.FormatInt(time.Now().UnixNano(), 10)+"\n")
-
-	machines := []string{"http://192.168.3.36:2379", "http://192.168.3.37:2379", "http://192.168.3.38:2379"}
-	client := etcd.NewClient(machines)
-
-	result, err := client.Get("/", true, true)
-
-	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		fmt.Fprintf(w, "client.Get: %v", err)
-		return
-	}
-
-	b, err := json.MarshalIndent(result, "", "    ")
-	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		fmt.Fprintf(w, "json.Marshal(receivedPodList): %v", err)
-		return
-	}
-
-	fmt.Fprintf(w, "etcd get:\n%v\n", string(b))
-	fmt.Printf("etcd get:\n%v\n", string(b))
 }
