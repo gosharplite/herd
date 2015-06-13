@@ -39,11 +39,7 @@ func GetRCList(lbs map[string]string) (*api.ReplicationControllerList, error) {
 	selector := labels.Set(lbs).AsSelector()
 	log.Info("selector: %v", selector)
 
-	r, e := c.ReplicationControllers(K8S_NAMESPACE).List(selector)
-
-	log.Info("ReplicationControllerList: %v", r)
-
-	return r, e
+	return c.ReplicationControllers(K8S_NAMESPACE).List(selector)
 }
 
 func GetRC(name string) (*api.ReplicationController, error) {
