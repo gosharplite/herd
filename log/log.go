@@ -1,6 +1,7 @@
 package log
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"log/syslog"
@@ -20,7 +21,6 @@ func init() {
 
 func Info(f string, v ...interface{}) string {
 	s := fmt.Sprintf(f, v...)
-	slog.Info(s)
 	log.Printf(s)
 	return s
 }
@@ -29,5 +29,20 @@ func Err(f string, v ...interface{}) string {
 	s := fmt.Sprintf(f, v...)
 	slog.Err(s)
 	log.Printf(s)
+	return s
+}
+
+func Marshal(v interface{}) string {
+
+	j, err := json.MarshalIndent(v, "", "    ")
+	if err != nil {
+		log.Printf("Err: json.MarshalIndent()")
+		return ""
+	}
+
+	s := string(j)
+
+	log.Printf(s)
+
 	return s
 }

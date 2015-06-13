@@ -85,14 +85,14 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// return response
-	log.Info("rsp: %v", rsp)
-
-	j, err := json.MarshalIndent(rsp, "", "    ")
+	j, err := json.Marshal(rsp)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		fmt.Fprintf(w, log.Err("json.Marshal: %v", err))
 		return
 	}
+
+	log.Marshal(rsp)
 
 	fmt.Fprintf(w, string(j))
 }
@@ -104,6 +104,8 @@ func getService(name string) (service, error) {
 		log.Err("k8s.GetService(): %v", err)
 		return service{}, err
 	}
+
+	log.Info("service: %v", se.Name)
 
 	rcList, err := k8s.GetRCList(se.Spec.Selector)
 	if err != nil {
@@ -139,6 +141,8 @@ func getRc(name string) (rc, error) {
 		return rc{}, err
 	}
 
+	log.Info("rc: %v", repcon.Name)
+
 	// get pods in rc
 	pods, err := k8s.GetPods(repcon.Spec.Selector)
 	if err != nil {
@@ -167,6 +171,8 @@ func getRc(name string) (rc, error) {
 
 func getPod(p api.Pod) (pod, error) {
 
+	log.Info("pod: %v", p.Name)
+
 	// get machine info for total mem
 	mInfo, err := cadv.GetMInfo(p.Status.HostIP)
 	if err != nil {
@@ -179,11 +185,13 @@ func getPod(p api.Pod) (pod, error) {
 	// get dockers in pod
 	for _, d := range p.Status.ContainerStatuses {
 
+		log.Info("docker: %v", d.Name)
+
 		// get cadvisor of docker
 		info, err := cadv.GetCInfo(p.Status.HostIP, d.ContainerID)
 		if err != nil {
 			log.Err("k8s.GetInfo(): %v", err)
-			return pod{}, err
+			continue
 		}
 
 		// cpu, mem
