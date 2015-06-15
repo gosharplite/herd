@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gosharplite/herd/etcd"
 	"github.com/gosharplite/herd/log"
 	"io/ioutil"
 	"net/http"

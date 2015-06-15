@@ -7,8 +7,6 @@ import (
 	"strings"
 )
 
-// TODO Make it better.
-
 var CADV_PORT = ":4194"
 
 func GetMInfo(HostIP string) (*info.MachineInfo, error) {

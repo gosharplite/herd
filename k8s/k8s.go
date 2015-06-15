@@ -2,51 +2,58 @@ package k8s
 
 import (
 	"github.com/GoogleCloudPlatform/kubernetes/pkg/api"
-	"github.com/GoogleCloudPlatform/kubernetes/pkg/client"
+	clt "github.com/GoogleCloudPlatform/kubernetes/pkg/client"
 	"github.com/GoogleCloudPlatform/kubernetes/pkg/fields"
 	"github.com/GoogleCloudPlatform/kubernetes/pkg/labels"
 	"github.com/gosharplite/herd/log"
 )
 
-// TODO Make it better.
+type Client struct {
+	host      string
+	version   string
+	namespace string
+	clt       *clt.Client
+}
 
-var (
-	K8S_HOST      = "http://192.168.4.54:8080"
-	K8S_VERSION   = "v1beta3"
-	K8S_NAMESPACE = "default"
-	c             *client.Client
-)
+func NewClient(host, version, namespace string) *Client {
 
-func init() {
+	c := Client{
+		host:      host,
+		version:   version,
+		namespace: namespace,
+	}
 
-	config := &client.Config{
-		Host:    K8S_HOST,
-		Version: K8S_VERSION,
+	config := &clt.Config{
+		Host:    host,
+		Version: version,
 	}
 
 	var err error
-	c, err = client.New(config)
+	c.clt, err = clt.New(config)
 	if err != nil {
 		log.Err("client.New()")
+		return nil
 	}
+
+	return &c
 }
 
-func GetService(name string) (*api.Service, error) {
-	return c.Services(K8S_NAMESPACE).Get(name)
+func (c *Client) GetService(name string) (*api.Service, error) {
+	return c.clt.Services(c.namespace).Get(name)
 }
 
-func GetRCList(lbs map[string]string) (*api.ReplicationControllerList, error) {
+func (c *Client) GetRCList(lbs map[string]string) (*api.ReplicationControllerList, error) {
 	selector := labels.Set(lbs).AsSelector()
 	log.Info("selector: %v", selector)
 
-	return c.ReplicationControllers(K8S_NAMESPACE).List(selector)
+	return c.clt.ReplicationControllers(c.namespace).List(selector)
 }
 
-func GetRC(name string) (*api.ReplicationController, error) {
-	return c.ReplicationControllers(K8S_NAMESPACE).Get(name)
+func (c *Client) GetRC(name string) (*api.ReplicationController, error) {
+	return c.clt.ReplicationControllers(c.namespace).Get(name)
 }
 
-func GetPods(lbs map[string]string) (*api.PodList, error) {
+func (c *Client) GetPods(lbs map[string]string) (*api.PodList, error) {
 	selector := labels.Set(lbs).AsSelector()
-	return c.Pods(K8S_NAMESPACE).List(selector, fields.Everything())
+	return c.clt.Pods(c.namespace).List(selector, fields.Everything())
 }

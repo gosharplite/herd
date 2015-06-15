@@ -7,8 +7,6 @@ import (
 	"log/syslog"
 )
 
-// TODO Get rid of syslog.
-
 var slog *syslog.Writer
 
 func init() {
@@ -36,7 +34,9 @@ func Marshal(v interface{}) string {
 
 	j, err := json.MarshalIndent(v, "", "    ")
 	if err != nil {
-		log.Printf("Err: json.MarshalIndent()")
+		e := "Err: json.MarshalIndent()"
+		slog.Err(e)
+		log.Printf(e)
 		return ""
 	}
 

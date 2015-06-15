@@ -4,36 +4,39 @@ import (
 	"errors"
 	"github.com/coreos/go-etcd/etcd"
 	"github.com/gosharplite/herd/log"
+	"strings"
 )
 
-// TODO Make it better.
-
-var (
-	ETCD_MACHINES = []string{
-		"http://192.168.3.36:2379",
-		"http://192.168.3.37:2379",
-		"http://192.168.3.38:2379"}
-
-	ETCD_PREFIX = "/gigacloud.com/autoscale/"
-
-	c *etcd.Client
-)
-
-func init() {
-	c = etcd.NewClient(ETCD_MACHINES)
-	if c == nil {
-		log.Err("etcd.NewClient()")
-	}
+type Client struct {
+	etcd_machines []string
+	etcd_prefix   string
+	clt           *etcd.Client
 }
 
-func Set(key, value string) error {
+func NewClient(etcd_machines, etcd_prefix string) *Client {
+
+	c := Client{
+		etcd_machines: strings.Split(etcd_machines, ","),
+		etcd_prefix:   etcd_prefix,
+	}
+
+	c.clt = etcd.NewClient(c.etcd_machines)
+	if c.clt == nil {
+		log.Err("etcd.NewClient()")
+		return nil
+	}
+
+	return &c
+}
+
+func (c *Client) Set(key, value string) error {
 
 	if key == "" {
 		log.Err("key is empty")
 		return errors.New("key is empty")
 	}
 
-	_, err := c.Set(ETCD_PREFIX+key, value, 0)
+	_, err := c.clt.Set(c.etcd_prefix+key, value, 0)
 	if err != nil {
 		log.Err("c.Set(): %v", err)
 		return err
@@ -42,14 +45,14 @@ func Set(key, value string) error {
 	return nil
 }
 
-func Get(key string) (string, error) {
+func (c *Client) Get(key string) (string, error) {
 
 	if key == "" {
 		log.Err("key is empty")
 		return "", errors.New("key is empty")
 	}
 
-	r, err := c.Get(ETCD_PREFIX+key, false, false)
+	r, err := c.clt.Get(c.etcd_prefix+key, false, false)
 	if err != nil {
 		log.Err("c.Get(): %v", err)
 		return "", err

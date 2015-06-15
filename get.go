@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/GoogleCloudPlatform/kubernetes/pkg/api"
 	"github.com/gosharplite/herd/cadv"
-	"github.com/gosharplite/herd/k8s"
 	"github.com/gosharplite/herd/log"
 	"io/ioutil"
 	"net/http"
