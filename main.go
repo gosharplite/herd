@@ -32,6 +32,7 @@ func main() {
 	http.HandleFunc("/setscale", setScaleHandler)
 	http.HandleFunc("/getscale", getScaleHandler)
 	http.HandleFunc("/get", getHandler)
+	http.HandleFunc("/getevent", getEventHandler)
 
 	go autoLoop()
 

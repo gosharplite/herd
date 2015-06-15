@@ -38,6 +38,10 @@ func NewClient(host, version, namespace string) *Client {
 	return &c
 }
 
+func (c *Client) ListEvents() (*api.EventList, error) {
+	return c.clt.Events(c.namespace).List(labels.Everything(), fields.Everything())
+}
+
 func (c *Client) GetService(name string) (*api.Service, error) {
 	return c.clt.Services(c.namespace).Get(name)
 }
