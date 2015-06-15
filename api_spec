@@ -79,3 +79,7 @@
 			}
 		]
 }
+
+/getevent
+==RESPONSE==
+{[event1,event2...]}
