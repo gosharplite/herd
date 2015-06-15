@@ -33,6 +33,8 @@ func main() {
 	http.HandleFunc("/getscale", getScaleHandler)
 	http.HandleFunc("/get", getHandler)
 
+	go autoLoop()
+
 	err := http.ListenAndServe(fmt.Sprintf(":%d", *PORT), nil)
 	fmt.Printf("proxy: %v\n", err)
 }

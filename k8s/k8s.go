@@ -57,3 +57,7 @@ func (c *Client) GetPods(lbs map[string]string) (*api.PodList, error) {
 	selector := labels.Set(lbs).AsSelector()
 	return c.clt.Pods(c.namespace).List(selector, fields.Everything())
 }
+
+func (c *Client) Update(ctrl *api.ReplicationController) (*api.ReplicationController, error) {
+	return c.clt.ReplicationControllers(c.namespace).Update(ctrl)
+}

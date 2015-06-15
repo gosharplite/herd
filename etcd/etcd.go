@@ -47,11 +47,6 @@ func (c *Client) Set(key, value string) error {
 
 func (c *Client) Get(key string) (string, error) {
 
-	if key == "" {
-		log.Err("key is empty")
-		return "", errors.New("key is empty")
-	}
-
 	r, err := c.clt.Get(c.etcd_prefix+key, false, false)
 	if err != nil {
 		log.Err("c.Get(): %v", err)
@@ -59,4 +54,26 @@ func (c *Client) Get(key string) (string, error) {
 	}
 
 	return r.Node.Value, nil
+}
+
+func (c *Client) GetScales() (etcd.Nodes, error) {
+
+	r, err := c.clt.Get(c.etcd_prefix, false, false)
+	if err != nil {
+		log.Err("c.Get(): %v", err)
+		return nil, err
+	}
+
+	return r.Node.Nodes, nil
+}
+
+func (c *Client) Delete(key string) error {
+
+	_, err := c.clt.Delete(c.etcd_prefix+key, false)
+	if err != nil {
+		log.Err("(): %v", err)
+		return err
+	}
+
+	return nil
 }

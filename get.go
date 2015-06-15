@@ -184,8 +184,6 @@ func getPod(p api.Pod) (pod, error) {
 	// get dockers in pod
 	for _, d := range p.Status.ContainerStatuses {
 
-		log.Info("docker: %v", d.Name)
-
 		// get cadvisor of docker
 		info, err := cadv.GetCInfo(p.Status.HostIP, d.ContainerID)
 		if err != nil {
