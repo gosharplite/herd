@@ -5,6 +5,7 @@ import (
 	"fmt"
 	e "github.com/gosharplite/herd/etcd"
 	k "github.com/gosharplite/herd/k8s"
+	"github.com/gosharplite/herd/log"
 	"net/http"
 )
 
@@ -26,6 +27,12 @@ var (
 
 func main() {
 	flag.Parse()
+	log.Info("K8S_HOST: %v", *K8S_HOST)
+	log.Info("K8S_VERSION: %v", *K8S_VERSION)
+	log.Info("K8S_NAMESPACE: %v", *K8S_NAMESPACE)
+	log.Info("ETCD_MACHINES: %v", *ETCD_MACHINES)
+	log.Info("ETCD_PREFIX: %v", *ETCD_PREFIX)
+
 	k8s = k.NewClient(*K8S_HOST, *K8S_VERSION, *K8S_NAMESPACE)
 	etcd = e.NewClient(*ETCD_MACHINES, *ETCD_PREFIX)
 

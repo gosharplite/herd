@@ -31,7 +31,7 @@ func NewClient(host, version, namespace string) *Client {
 	var err error
 	c.clt, err = clt.New(config)
 	if err != nil {
-		log.Err("client.New()")
+		log.Err("client.New() err: %v", err)
 		return nil
 	}
 
