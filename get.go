@@ -11,8 +11,9 @@ import (
 )
 
 type req struct {
-	Services []string `json:"services"`
-	Clusters []string `json:"clusters"`
+	Services   []string `json:"services"`
+	Clusters   []string `json:"clusters"`
+	Containers []string `json:"containers"`
 }
 
 type pod struct {
@@ -32,8 +33,9 @@ type service struct {
 }
 
 type resp struct {
-	Services []service `json:"services"`
-	Clusters []rc      `json:"clusters"`
+	Services   []service `json:"services"`
+	Clusters   []rc      `json:"clusters"`
+	Containers []pod     `json:"containers"`
 }
 
 func getHandler(w http.ResponseWriter, r *http.Request) {
@@ -57,8 +59,9 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 
 	//	response
 	rsp := resp{
-		Services: make([]service, 0),
-		Clusters: make([]rc, 0),
+		Services:   make([]service, 0),
+		Clusters:   make([]rc, 0),
+		Containers: make([]pod, 0),
 	}
 
 	// services
@@ -81,6 +84,23 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		rsp.Clusters = append(rsp.Clusters, rcs)
+	}
+
+	// containers
+	for _, co := range rq.Containers {
+		pd, err := k8s.GetPod(co)
+		if err != nil {
+			log.Err("k8s.GetPod(): %v", err)
+			continue
+		}
+
+		cos, err := getPod(*pd)
+		if err != nil {
+			log.Err("getPod(): %v", err)
+			continue
+		}
+
+		rsp.Containers = append(rsp.Containers, cos)
 	}
 
 	// return response

@@ -39,6 +39,9 @@
 																			
 	"clusters" :
 		["id1","id2","id3"]													# rc name
+
+	"containers" :															# pod name
+		["id1","id2","id3"]
 }
 
 ==RESPONSE==
@@ -76,6 +79,15 @@
 							"mem": (int)
 						}
 					]
+			}
+		]
+		
+	"containers" :
+		[
+			{
+				"container_name": (string),						# pod name
+				"cpu": (int),
+				"mem": (int)
 			}
 		]
 }
