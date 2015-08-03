@@ -50,6 +50,8 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Info("get: %v", string(body))
+
 	var rq req
 	err = json.Unmarshal(body, &rq)
 	if err != nil {
@@ -112,7 +114,7 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Marshal(rsp)
+	//	log.Marshal(rsp)
 
 	fmt.Fprintf(w, string(j))
 }

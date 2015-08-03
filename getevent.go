@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gosharplite/herd/log"
 	"net/http"
@@ -16,5 +17,11 @@ func getEventHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, log.Marshal(events.Items))
+	j, err := json.MarshalIndent(events.Items, "", "    ")
+	if err != nil {
+		log.Err("json.MarshalIndent: %v", err)
+		return
+	}
+
+	fmt.Fprintf(w, string(j))
 }
