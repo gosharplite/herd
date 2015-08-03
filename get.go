@@ -52,12 +52,30 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Info("get: %v", string(body))
 
-	var rq req
-	err = json.Unmarshal(body, &rq)
+	// check catching
+	c, err := getCatch("getHandler", string(body))
+	if err == nil {
+		fmt.Fprintf(w, c)
+		go getHandlerResp(body)
+		return
+	}
+
+	j, err := getHandlerResp(body)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		fmt.Fprintf(w, log.Err("json.Unmarshal: %v", err))
+		fmt.Fprintf(w, log.Err("getResp: %v", err))
 		return
+	}
+
+	fmt.Fprintf(w, j)
+}
+
+func getHandlerResp(body []byte) (string, error) {
+
+	var rq req
+	err := json.Unmarshal(body, &rq)
+	if err != nil {
+		return "", err
 	}
 
 	//	response
@@ -109,14 +127,12 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 	// return response
 	j, err := json.Marshal(rsp)
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		fmt.Fprintf(w, log.Err("json.Marshal: %v", err))
-		return
+		return "", err
 	}
 
-	//	log.Marshal(rsp)
+	go addCatch("getHandler", string(body), string(j))
 
-	fmt.Fprintf(w, string(j))
+	return string(j), nil
 }
 
 func getService(name string) (service, error) {
