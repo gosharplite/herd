@@ -39,6 +39,7 @@ type resp struct {
 }
 
 func getHandler(w http.ResponseWriter, r *http.Request) {
+	defer log.Un(log.Trace("getHandler"))
 
 	// request body
 	defer r.Body.Close()
@@ -124,7 +125,7 @@ func getService(name string) (service, error) {
 		return service{}, err
 	}
 
-	log.Info("service: %v", se.Name)
+	//	log.Info("service: %v", se.Name)
 
 	rcList, err := k8s.GetRCList(se.Spec.Selector)
 	if err != nil {
@@ -160,7 +161,7 @@ func getRc(name string) (rc, error) {
 		return rc{}, err
 	}
 
-	log.Info("rc: %v", repcon.Name)
+	//	log.Info("rc: %v", repcon.Name)
 
 	// get pods in rc
 	pods, err := k8s.GetPods(repcon.Spec.Selector)
@@ -190,7 +191,7 @@ func getRc(name string) (rc, error) {
 
 func getPod(p api.Pod) (pod, error) {
 
-	log.Info("pod: %v", p.Name)
+	//	log.Info("pod: %v", p.Name)
 
 	// get machine info for total mem
 	mInfo, err := cadv.GetMInfo(p.Status.HostIP)

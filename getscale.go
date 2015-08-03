@@ -9,6 +9,7 @@ import (
 )
 
 func getScaleHandler(w http.ResponseWriter, r *http.Request) {
+	defer log.Un(log.Trace("getScaleHandler"))
 
 	type jReq struct {
 		Clusters []string `json:"clusters"`

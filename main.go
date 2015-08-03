@@ -13,7 +13,7 @@ var (
 	PORT = flag.Int("port", 8090, "The server port")
 
 	K8S_HOST      = flag.String("k8s_host", "http://192.168.4.54:8080", "k8s host")
-	K8S_VERSION   = flag.String("k8s_version", "v1beta3", "k8s version")
+	K8S_VERSION   = flag.String("k8s_version", "v1", "k8s version")
 	K8S_NAMESPACE = flag.String("k8s_namespace", "default", "k8s namespace")
 	k8s           *k.Client
 

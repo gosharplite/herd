@@ -23,6 +23,7 @@ func autoLoop() {
 }
 
 func fetchScales() error {
+	defer log.Un(log.Trace("fetchScales"))
 
 	v, err := etcd.GetScales()
 	if err != nil {
@@ -50,7 +51,7 @@ func fetchScales() error {
 
 func checkScale(js jScale) error {
 
-	log.Info("js: %v", js)
+	//	log.Info("js: %v", js)
 
 	if js.EnableAutoScale == 0 {
 		// delete

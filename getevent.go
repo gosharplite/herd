@@ -7,6 +7,7 @@ import (
 )
 
 func getEventHandler(w http.ResponseWriter, r *http.Request) {
+	defer log.Un(log.Trace("getEventHandler"))
 
 	events, err := k8s.ListEvents()
 	if err != nil {

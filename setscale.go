@@ -18,6 +18,7 @@ type jScale struct {
 }
 
 func setScaleHandler(w http.ResponseWriter, r *http.Request) {
+	defer log.Un(log.Trace("setScaleHandler"))
 
 	// request body
 	defer r.Body.Close()
@@ -28,7 +29,7 @@ func setScaleHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Info("setscale request body:\n%v\n", string(body))
+	//	log.Info("setscale request body:\n%v\n", string(body))
 
 	var jss jScale
 	err = json.Unmarshal(body, &jss)

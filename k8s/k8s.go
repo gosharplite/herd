@@ -48,7 +48,7 @@ func (c *Client) GetService(name string) (*api.Service, error) {
 
 func (c *Client) GetRCList(lbs map[string]string) (*api.ReplicationControllerList, error) {
 	selector := labels.Set(lbs).AsSelector()
-	log.Info("selector: %v", selector)
+	//	log.Info("selector: %v", selector)
 
 	return c.clt.ReplicationControllers(c.namespace).List(selector)
 }
